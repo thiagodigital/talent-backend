@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\DecryptSanctumToken;
 use Illuminate\Http\Request;
@@ -11,6 +12,9 @@ Route::middleware([
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::apiResource('/positions', PositionController::class)->parameters([
+        'positions' => 'position'
+    ]);
 });
 
 Route::post('/register', [UserController::class, 'register']);
