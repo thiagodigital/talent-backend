@@ -12,8 +12,8 @@ class Position extends Model
 
     protected $fillable = ['name'];
 
-    // public function collaborators()
-    // {
-    //     return $this->hasMany(Collaborator::class);
-    // }
+    public function collaborators()
+    {
+        return $this->hasMany(Collaborator::class);
+    }
 }

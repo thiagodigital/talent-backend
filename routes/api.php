@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CollaboratorController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\DecryptSanctumToken;
@@ -14,6 +15,9 @@ Route::middleware([
     });
     Route::apiResource('/positions', PositionController::class)->parameters([
         'positions' => 'position'
+    ]);
+    Route::apiResource('/collaborators', CollaboratorController::class)->parameters([
+        'collaborators' => 'collaborator'
     ]);
 });
 
