@@ -39,6 +39,9 @@ class PermissionSeeder extends Seeder
             // Admin
             'manage roles',
             'manage permissions',
+
+            'view tests',
+            'view trails',
         ];
 
         foreach ($permissions as $permission) {

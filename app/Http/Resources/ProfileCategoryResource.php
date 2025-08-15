@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PositionResource extends JsonResource
+class ProfileCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,9 @@ class PositionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'   => $this->id,
+            'id' => $this->id,
             'name' => $this->name,
-            'skills' => $this->skills,
-            'collaborators_count' => $this->collaborators->count(),
+            'profile_traits' => ProfileTraitResource::collection($this->whenLoaded('profileTraits')),
         ];
     }
 }

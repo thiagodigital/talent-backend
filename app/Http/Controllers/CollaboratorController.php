@@ -25,7 +25,10 @@ class CollaboratorController extends Controller
      */
     public function store(StoreCollaboratorRequest $request)
     {
-        $collaborator = Collaborator::create($request->validated());
+        $request->validated();
+        $auth = auth()->user();
+        $request->merge(['parent_id' => $auth->id]);
+        $collaborator = Collaborator::create($request->all());
         return $this->successResponse(new CollaboratorResource($collaborator), "Collaborator created successfully.", 201);
     }
 
@@ -34,7 +37,10 @@ class CollaboratorController extends Controller
      */
     public function show(Collaborator $collaborator)
     {
-        return $this->successResponse(new CollaboratorResource($collaborator), "Collaborator retrieved successfully.");
+        $item = Collaborator::with('profileTraits.profileCategory')
+            ->findOrFail($collaborator->id);
+            // dd($item);
+        return $this->successResponse(new CollaboratorResource($item), "Collaborator retrieved successfully.");
     }
 
     /**

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CollaboratorController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\ProfileCategoryController;
+use App\Http\Controllers\ProfileTraitController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\DecryptSanctumToken;
 use Illuminate\Http\Request;
@@ -13,6 +15,14 @@ Route::middleware([
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::get('/categories', [ProfileCategoryController::class, 'index']);
+    Route::get('/categories/{profileCategory}', [ProfileCategoryController::class, 'show']);
+
+    Route::get('/traits', [ProfileTraitController::class, 'index']);
+    Route::post('/traits', [ProfileTraitController::class, 'store']);
+    Route::get('/traits/{profileTrait}', [ProfileTraitController::class, 'show']);
+
     Route::apiResource('/positions', PositionController::class)->parameters([
         'positions' => 'position'
     ]);
@@ -23,3 +33,4 @@ Route::middleware([
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+Route::get('/auth/verify', [UserController::class, 'verify'])->middleware('auth:sanctum');

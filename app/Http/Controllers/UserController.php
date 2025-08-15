@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
@@ -33,18 +36,21 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email|max:255|exists:users,email',
-            'password' => 'required|string|min:8',
-        ]);
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             $token = $user->createToken('Personal Access Token')->plainTextToken;
-            return response()->json(['message' => 'Login successful', 'token' => $token], 200);
+            return response()->json([
+                'message' => 'Login successful', 
+                'status' => 'success', 
+                'data' => [
+                    'token' => $token,
+                    'user' => $user,
+                    ]
+                ], 200);
         }
         return response()->json(['message' => auth()->attempt($credentials)], 200);
     }
@@ -52,9 +58,14 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function verify()
     {
-        //
+        $user = auth()->user();
+
+        if(is_null($user)) {
+            return response()->json(false, 200);
+        }
+        return response()->json(true, 200);
     }
 
     /**

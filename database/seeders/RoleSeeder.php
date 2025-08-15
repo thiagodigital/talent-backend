@@ -17,6 +17,7 @@ class RoleSeeder extends Seeder
         $admin = Role::create(['name' => 'admin']);
         $manager = Role::create(['name' => 'gestor']);
         $hr = Role::create(['name' => 'rh']);
+        $collaborator = Role::create(['name' => 'colaborador']);
 
         // Admin tem tudo
         $admin->givePermissionTo(Permission::all());
@@ -45,6 +46,11 @@ class RoleSeeder extends Seeder
 
             'view risk report',
             'generate risk report',
+        ]);
+
+        $collaborator->givePermissionTo([
+            'view tests',
+            'view trails',
         ]);
     }
 }

@@ -10,7 +10,14 @@ class Position extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'skills'];
+
+    protected function casts(): array
+    {
+        return [
+            'skills' => 'array',
+        ];
+    }
 
     public function collaborators()
     {
