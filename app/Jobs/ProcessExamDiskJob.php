@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class ProcessExamDiskJob implements ShouldQueue
 {
