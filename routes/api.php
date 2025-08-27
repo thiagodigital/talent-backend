@@ -29,6 +29,9 @@ Route::middleware([
     Route::apiResource('/collaborators', CollaboratorController::class)->parameters([
         'collaborators' => 'collaborator'
     ]);
+    Route::get('/profile-category/list/group', [ProfileTraitController::class, 'listGroup']);
+    Route::get('/exams/profile/list/disc', [ProfileTraitController::class, 'discList']);
+    Route::post('/exams/profile/store/disc', [ProfileTraitController::class, 'discStore']);
 });
 
 Route::post('/register', [UserController::class, 'register']);

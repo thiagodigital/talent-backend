@@ -26,9 +26,13 @@ class CollaboratorResource extends JsonResource
         $profile = $grouped->map(function ($items) {
             $category = $items->first()->profileCategory ?? null;
 
+            $mediaScore = round($items->avg(fn($trait) => $trait->pivot->score ?? 0), 2);
+
             return [
                     'id' => $category?->id,
                     'name' => $category?->name,
+                    'color' => $category?->color,
+                    'media_score' => $mediaScore,
                     'traits' => $items->map(function ($trait) {
                         return [
                             'id' => $trait->id,

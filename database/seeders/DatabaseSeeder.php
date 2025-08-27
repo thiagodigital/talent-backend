@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class, // Assuming you have a PermissionSeeder
             RoleSeeder::class, // Assuming you have a RoleSeeder
-            UserSeeder::class,
             ProfileCategorySeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

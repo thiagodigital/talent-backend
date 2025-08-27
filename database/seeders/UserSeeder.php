@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Collaborator;
+use App\Models\ProfileTrait;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,10 +15,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Thiago Augusto',
             'email' => 'thiago@site.com',
             'password' => bcrypt('password'), // Use a secure password hashing method
         ])->assignRole('admin'); // Assuming you have a role system in place
+
+        $collaborators = Collaborator::factory()->count(5)->create([
+            'parent_id' => $user->id,
+        ]);
+
+        foreach ($collaborators as $collaborator) {
+            $countarray = [0,25,50,75,100];
+            $traitCollection = ProfileTrait::select('id')->get()
+                ->mapWithKeys(function ($trait) use ($collaborator, $countarray) {
+                    return [
+                        $trait->id => [
+                            'collaborator_id'   => $collaborator->id,
+                            'profile_trait_id'  => $trait->id,
+                            'score'             => $countarray[array_rand([0,25,50,75,100], 1)] ?? 20,
+                        ]
+                    ];
+            })->toArray();
+            $collaborator->profileTraits()->sync($traitCollection);
+        }
     }
 }
