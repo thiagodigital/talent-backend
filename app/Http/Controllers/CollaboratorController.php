@@ -37,7 +37,7 @@ class CollaboratorController extends Controller
      */
     public function show(Collaborator $collaborator)
     {
-        $item = Collaborator::with('profileTraits.profileCategory')
+        $item = Collaborator::with(['profileTraits.profileCategory', 'evaluations'])
             ->findOrFail($collaborator->id);
             // dd($item);
         return $this->successResponse(new CollaboratorResource($item), "Collaborator retrieved successfully.");

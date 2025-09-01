@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileDiscStoreRequest;
 use App\Http\Requests\StoreProfileTraitRequest;
 use App\Http\Resources\ExamDiscCollectionResource;
 use App\Http\Resources\ExamDiscResource;
 use App\Http\Resources\ProfileCategoryListGroup;
 use App\Http\Resources\ProfileTraitResource;
 use App\Http\Resources\ProfileTraitResourceCollection;
+use App\Jobs\ProcessExamDiskJob;
 use App\Models\Collaborator;
 use App\Models\ProfileCategory;
 use App\Models\ProfileTrait;
@@ -64,14 +66,9 @@ class ProfileTraitController extends Controller
         // dd($traits);
         return $this->successResponse(ExamDiscCollectionResource::collection($traits), "Disc traits retrieved successfully.");
     }
-    public function discStore(Request $request)
+    public function discStore(ProfileDiscStoreRequest $request)
     {
-        $request->validate([
-            'collaborator_id' => 'required|exists:collaborators,id',
-            'traits' => 'required|array',
-            'traits.*.id' => 'required|exists:profile_traits,id',
-            'traits.*.score' => 'required|integer|min:0|max:100',
-        ]);
+        $request->validated();
 
         $collaborator = Collaborator::findOrFail($request->collaborator_id);
 
@@ -84,6 +81,7 @@ class ProfileTraitController extends Controller
         }
 
         $collaborator->profileTraits()->sync($novoarray);
+        dispatch(new ProcessExamDiskJob($collaborator->id));
         // dd($collaborator);
 
         return $this->successResponse($collaborator->load('profileTraits.profileCategory'), "Disc traits stored successfully.", 201);

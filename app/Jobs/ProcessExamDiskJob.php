@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Collaborator;
+use App\Models\CollaboratorEvaluation;
+use App\Services\DiscEvaluatorService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -29,43 +31,21 @@ class ProcessExamDiskJob implements ShouldQueue
                 'name' => $t->name,
                 'score' => $t->pivot->score,
                 'category' => $t->profileCategory->name,
-            ])->toArray(),
+            ])
         ];
 
         // Chama API do GPT
-        $client = OpenAI::client(config('services.openai.key'));
+        $evaluation = DiscEvaluatorService::evaluate($collaborator, $payload);
 
-        $response = $client->chat()->create([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                ['role' => 'system', 'content' => 'Você é um avaliador DISC. Responda sempre em JSON.'],
-                ['role' => 'user', 'content' => json_encode($payload)]
-            ],
-            'response_format' => [
-                'type' => 'json_schema',
-                'json_schema' => [
-                    'name' => 'disc_evaluation',
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'dominant' => ['type' => 'string'],
-                            'influente' => ['type' => 'string'],
-                            'estavel' => ['type' => 'string'],
-                            'analista' => ['type' => 'string'],
-                            'summary' => ['type' => 'string'],
-                        ],
-                        'required' => ['dominant','influente','estavel','analista','summary']
-                    ]
-                ]
-            ]
+        // 🔹 Salva no histórico de avaliações
+        CollaboratorEvaluation::create([
+            'collaborator_id' => $collaborator->id,
+            'summary'         => $evaluation['summary'],
+            'proficience'     => $evaluation['proficience'],
+            'align'           => $evaluation['align'],
+            'assets'          => $evaluation['assets'],
+            'questions'       => $evaluation['questions'],
+            'score'           => $evaluation['score'],
         ]);
-
-        $evaluation = json_decode($response->choices[0]->message->content, true);
-
-        // Salva resultado no banco
-        CollaboratorEvaluation::updateOrCreate(
-            ['collaborator_id' => $collaborator->id],
-            ['result' => $evaluation]
-        );
     }
 }

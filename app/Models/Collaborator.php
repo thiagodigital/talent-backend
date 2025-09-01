@@ -16,7 +16,8 @@ class Collaborator extends Model
         'email',
         'phone',
         'address_id',
-        'position_id',
+        'position',
+        'tread_id',
         'parent_id',
         'role_id',
     ];
@@ -36,6 +37,16 @@ class Collaborator extends Model
         return $this->belongsToMany(ProfileTrait::class, 'collaborator_profile_trait')
                     ->withPivot('score')
                     ->withTimestamps();
+    }
+
+    public function evaluations()
+    {
+        return $this->hasMany(CollaboratorEvaluation::class);
+    }
+
+    public function latestEvaluation()
+    {
+        return $this->hasOne(CollaboratorEvaluation::class)->latestOfMany();
     }
 
 }

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'organization' => env('OPENAI_ORGANIZATION'), // pode remover se não usar
+        'assistants' => [
+            'disc_evaluator' => env('OPENAI_ASSISTANT_DISC'),
+        ],
+    ],
+
 ];

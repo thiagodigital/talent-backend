@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Jobs\ProcessExamDiskJob;
 use App\Models\Collaborator;
 use App\Models\ProfileTrait;
 use App\Models\User;
@@ -21,8 +22,11 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'), // Use a secure password hashing method
         ])->assignRole('admin'); // Assuming you have a role system in place
 
-        $collaborators = Collaborator::factory()->count(5)->create([
+        $positions = ['Desenvolvedor', 'Designer', 'Auxiliar de producao', 'Operador de Caixa', 'Gerente de Loja'];
+
+        $collaborators = Collaborator::factory()->count(2)->create([
             'parent_id' => $user->id,
+            'position' => $positions[array_rand($positions)],
         ]);
 
         foreach ($collaborators as $collaborator) {
@@ -36,8 +40,9 @@ class UserSeeder extends Seeder
                             'score'             => $countarray[array_rand([0,25,50,75,100], 1)] ?? 20,
                         ]
                     ];
-            })->toArray();
+                })->toArray();
             $collaborator->profileTraits()->sync($traitCollection);
+            dispatch(new ProcessExamDiskJob($collaborator->id));
         }
     }
 }

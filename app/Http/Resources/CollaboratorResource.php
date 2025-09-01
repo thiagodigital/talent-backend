@@ -49,6 +49,19 @@ class CollaboratorResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'profile_category' => $this->when($profile->isNotEmpty(), $profile),
+            // Histórico completo
+            'evaluations' => $this->whenLoaded('evaluations', function () {
+                return $this->evaluations->map(fn($eval) => [
+                    'id'         => $eval->id,
+                    'summary'    => $eval->summary,
+                    'proficience'=> $eval->proficience,
+                    'align'      => $eval->align,
+                    'assets'     => $eval->assets,
+                    'questions'  => $eval->questions,
+                    'score'      => $eval->score,
+                    'created_at' => $eval->created_at->toDateTimeString(),
+                ]);
+            }),
         ];
     }
 }
