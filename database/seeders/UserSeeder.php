@@ -18,13 +18,13 @@ class UserSeeder extends Seeder
     {
         $user = User::factory()->create([
             'name' => 'Thiago Augusto',
-            'email' => 'thiago@site.com',
-            'password' => bcrypt('password'), // Use a secure password hashing method
+            'email' => 'jrer@uol.com.br',
+            'password' => bcrypt('senhaForte123'), // Use a secure password hashing method
         ])->assignRole('admin'); // Assuming you have a role system in place
 
         $positions = ['Desenvolvedor', 'Designer', 'Auxiliar de producao', 'Operador de Caixa', 'Gerente de Loja'];
 
-        $collaborators = Collaborator::factory()->count(2)->create([
+        $collaborators = Collaborator::factory()->count(5)->create([
             'parent_id' => $user->id,
             'position' => $positions[array_rand($positions)],
         ]);
