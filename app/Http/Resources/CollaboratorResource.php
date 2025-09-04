@@ -14,42 +14,54 @@ class CollaboratorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // garante que temos uma Collection
+        // Garante que temos os traits carregados do colaborador
         $traits = $this->relationLoaded('profileTraits')
             ? collect($this->profileTraits)
             : collect();
 
-        // agrupa por categoria (ID)
-        $grouped = $traits->groupBy(fn($trait) => $trait->profileCategory->id ?? null);
+        // Carrega todas as categorias com seus traits
+        $categories = \App\Models\ProfileCategory::with('profileTraits')->get();
 
-        // transforma no formato desejado
-        $profile = $grouped->map(function ($items) {
-            $category = $items->first()->profileCategory ?? null;
-
-            $mediaScore = round($items->avg(fn($trait) => $trait->pivot->score ?? 0), 2);
-
+        $profileCategories = $categories->map(function ($category) use ($traits) {
+            $mediaScore = round(
+                $traits
+                    ->filter(fn($t) => $t->profileCategory?->id === $category->id)
+                    ->avg(fn($t) => $t->pivot->score ?? 0),
+                2
+            );
             return [
-                    'id' => $category?->id,
-                    'name' => $category?->name,
-                    'color' => $category?->color,
-                    'media_score' => $mediaScore,
-                    'traits' => $items->map(function ($trait) {
+                'id'       => $category->id,
+                'category' => $category->name,
+                'color'    => $category->color,
+                'media_score'=> $mediaScore,
+                'options'  => $category->profileTraits
+                    ->chunk(3) // agrupa de 3 em 3
+                    ->map(function ($chunk) use ($traits) {
+                        // Pega o primeiro trait do chunk
+                        $first = $chunk->first();
+
+                        // Busca o score do colaborador nesse trait
+                        $score = optional(
+                            $traits->firstWhere('id', $first->id)
+                        )->pivot->score ?? null;
+
                         return [
-                            'id' => $trait->id,
-                            'name' => $trait->name,
-                            'score' => $trait->pivot->score ?? 0,
+                            'score' => $score,
+                            'name'  => $chunk->pluck('name')->values(),
+                            'ids'   => $chunk->pluck('id')->values(),
                         ];
-                    })->values(),
+                    })
+                    ->values(),
             ];
         })->values();
 
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'profile_category' => $this->when($profile->isNotEmpty(), $profile),
-            // Histórico completo
+            'id'       => $this->id,
+            'name'     => $this->name,
+            'email'    => $this->email,
+            'position' => $this->position,
+            'phone'    => $this->phone,
+            'profile_category' => $profileCategories,
             'evaluations' => $this->whenLoaded('evaluations', function () {
                 return $this->evaluations->map(fn($eval) => [
                     'id'         => $eval->id,

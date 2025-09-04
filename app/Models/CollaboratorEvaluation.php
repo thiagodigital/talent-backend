@@ -13,6 +13,7 @@ class CollaboratorEvaluation extends Model
         'collaborator_id',
         'summary',
         'proficience',
+        'position',
         'align',
         'assets',
         'questions',

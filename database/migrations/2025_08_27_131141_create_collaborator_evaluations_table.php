@@ -16,9 +16,10 @@ return new class extends Migration
             $table->uuid('collaborator_id');
 
             // Campos principais vindos do JSON
+            $table->string('position'); // texto curto
             $table->longText('summary'); // texto grande
-            $table->longText('proficience'); 
-            $table->longText('align'); 
+            $table->longText('proficience');
+            $table->longText('align');
 
             // JSONs estruturados
             $table->json('assets')->nullable(); // { "movies": [...], "books": [...] }
