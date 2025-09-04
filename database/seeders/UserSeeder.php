@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             'email' => 'jrer@uol.com.br',
             'password' => bcrypt('senhaForte123'), // Use a secure password hashing method
         ])->assignRole('admin'); // Assuming you have a role system in place
-        $collaborators2 = Collaborator::factory()->count(2)->create([
+        $collaborators2 = Collaborator::factory()->count(5)->create([
             'parent_id' => $user2->id,
             'position' => $positions[array_rand($positions)],
         ]);
