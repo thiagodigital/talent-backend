@@ -16,7 +16,8 @@ class CollaboratorController extends Controller
      */
     public function index()
     {
-        $collaborators = Collaborator::all();
+        $parent_id = auth()->user()->id;
+        $collaborators = Collaborator::where('parent_id', $parent_id)->get();
         return $this->successResponse(CollaboratorResource::collection($collaborators), "collaborators retrieved successfully.");
     }
 
@@ -37,7 +38,8 @@ class CollaboratorController extends Controller
      */
     public function show(Collaborator $collaborator)
     {
-        $item = Collaborator::with(['profileTraits.profileCategory', 'evaluations'])
+        $parent_id = auth()->user()->id;
+        $item = Collaborator::where('parent_id', $parent_id)->with(['profileTraits.profileCategory', 'evaluations'])
             ->findOrFail($collaborator->id);
             // dd($item);
         return $this->successResponse(new CollaboratorResource($item), "Collaborator retrieved successfully.");

@@ -26,6 +26,7 @@ class ProcessExamDiskJob implements ShouldQueue
         $payload = [
             'id' => $collaborator->id,
             'name' => $collaborator->name,
+            'position' => $collaborator->position,
             'traits' => $collaborator->profileTraits->map(fn($t) => [
                 'id' => $t->id,
                 'name' => $t->name,
@@ -40,6 +41,7 @@ class ProcessExamDiskJob implements ShouldQueue
         // 🔹 Salva no histórico de avaliações
         CollaboratorEvaluation::create([
             'collaborator_id' => $collaborator->id,
+            'position'        => $evaluation['position'],
             'summary'         => $evaluation['summary'],
             'proficience'     => $evaluation['proficience'],
             'align'           => $evaluation['align'],
