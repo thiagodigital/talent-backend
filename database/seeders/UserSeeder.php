@@ -18,8 +18,8 @@ class UserSeeder extends Seeder
     {
         $user = User::factory()->create([
             'name' => 'Thiago Augusto',
-            'email' => 'jrer@uol.com.br',
-            'password' => bcrypt('senhaForte123'), // Use a secure password hashing method
+            'email' => 'thiago@site.com',
+            'password' => bcrypt('password'), // Use a secure password hashing method
         ])->assignRole('admin'); // Assuming you have a role system in place
 
         $positions = ['Desenvolvedor', 'Designer', 'Auxiliar de producao', 'Operador de Caixa', 'Gerente de Loja'];
