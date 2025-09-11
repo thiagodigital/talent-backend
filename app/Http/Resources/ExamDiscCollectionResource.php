@@ -31,9 +31,11 @@ class ExamDiscCollectionResource extends ResourceCollection
 
         for ($i = 0; $i < $maxChunks; $i++) {
             $options = [];
-            foreach ($chunkedByCategory as $chunks) {
+            foreach ($chunkedByCategory as $index => $chunks) {
                 if (isset($chunks[$i])) {
-                    $options[] = $chunks[$i];
+                    $option = $chunks[$i];
+                    $option['number'] = $index; // começa em 1
+                    $options[] = $option;
                 }
             }
 
