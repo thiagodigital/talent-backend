@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profile_traits', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->uuid('category_id');
-            $table->foreign('category_id')->references('id')->on('profile_categories')->onDelete('cascade');
+        Schema::create('evaluations', function (Blueprint $table) {
+            $table->id();
+            $table->text('label');
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profile_traits');
+        Schema::dropIfExists('evaluations');
     }
 };

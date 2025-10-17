@@ -6,17 +6,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProfileCategory extends Model
+class Evaluation extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
     protected $fillable = [
-        'name',
-        'color',
+        'label',
+        'type',
     ];
-
-    public function profileTraits()
-    {
-        return $this->hasMany(ProfileTrait::class, 'category_id');
-    }
 }

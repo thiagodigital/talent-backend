@@ -40,6 +40,7 @@ return [
         'organization' => env('OPENAI_ORGANIZATION'), // pode remover se não usar
         'assistants' => [
             'disc_evaluator' => env('OPENAI_ASSISTANT_DISC'),
+            'evaluation_assistent' => env('OPENAI_ASSISTANT_EVALUATION'),
         ],
     ],
 

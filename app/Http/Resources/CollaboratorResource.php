@@ -65,7 +65,7 @@ class CollaboratorResource extends JsonResource
             'evaluations' => $this->whenLoaded('evaluations', function () {
                 return $this->evaluations->map(fn($eval) => [
                     'id'         => $eval->id,
-                    'summary'    => $eval->summary,
+                    // 'summary'    => $eval->summary,
                     'proficience'=> $eval->proficience,
                     'align'      => $eval->align,
                     'assets'     => $eval->assets,

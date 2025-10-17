@@ -41,13 +41,11 @@ class ProcessExamDiskJob implements ShouldQueue
         // 🔹 Salva no histórico de avaliações
         CollaboratorEvaluation::create([
             'collaborator_id' => $collaborator->id,
-            'position'        => $evaluation['position'],
-            'summary'         => $evaluation['summary'],
-            'proficience'     => $evaluation['proficience'],
-            'align'           => $evaluation['align'],
-            'assets'          => $evaluation['assets'],
-            'questions'       => $evaluation['questions'],
-            'score'           => $evaluation['score'],
+            'position'        => $collaborator->position,
+            'feedback'        => $evaluation['feedback'],
+            'opinion'         => $evaluation['opinion'],
+            'points'          => $evaluation['points'],
+            'positions'       => $evaluation['positions'],
         ]);
     }
 }

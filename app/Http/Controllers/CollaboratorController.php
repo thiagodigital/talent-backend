@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCollaboratorRequest;
 use App\Http\Requests\UpdateCollaboratorRequest;
 use App\Http\Resources\CollaboratorResource;
+use App\Http\Resources\CollaboratorResource2;
 use App\Models\Collaborator;
 use App\Traits\ApiResponse;
 
@@ -39,10 +40,11 @@ class CollaboratorController extends Controller
     public function show(Collaborator $collaborator)
     {
         $parent_id = auth()->user()->id;
-        $item = Collaborator::where('parent_id', $parent_id)->with(['profileTraits.profileCategory', 'evaluations'])
+        // return Collaborator::where('parent_id', $parent_id)->first();
+        $item = Collaborator::where('parent_id', $parent_id)
             ->findOrFail($collaborator->id);
             // dd($item);
-        return $this->successResponse(new CollaboratorResource($item), "Collaborator retrieved successfully.");
+        return $this->successResponse(new CollaboratorResource2($item), "Collaborator retrieved successfully.");
     }
 
     /**

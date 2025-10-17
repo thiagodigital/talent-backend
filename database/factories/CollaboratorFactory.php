@@ -27,7 +27,7 @@ class CollaboratorFactory extends Factory
             'email'  => Str::slug($name, '.') . fake()->randomElement($provedor, 1),
             'phone'  => fake()->phoneNumber(),
             'parent_id'  => User::inRandomOrder()->first()->id,
-            'position' => fake()->randomElement($positions, 1),
+            'position' => $positions[array_rand($positions)],
             'role_id'  => 4,
         ];
     }
