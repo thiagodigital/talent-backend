@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileEvaluationRequest;
+use App\Http\Requests\StoreEvaluationRequest;
 use App\Http\Resources\EvaluationResourceCollection;
 use App\Jobs\ProcessCollaboratorEvaluation;
 use App\Jobs\ProcessExamEvaluationJob;
@@ -23,50 +23,31 @@ class EvaluationController extends Controller
         return $this->successResponse(EvaluationResourceCollection::collection($evaluations), "Evaluations retrieved successfully.");
     }
 
-    public function storeEvaluation(ProfileEvaluationRequest $request)
+    public function storeEvaluation(StoreEvaluationRequest $request)
     {
         $request->validated();
 
         $collaborator = Collaborator::findOrFail($request->collaborator_id);
-        $collaboratorPosition = $collaborator->position;
 
-        // 1. Mapeia e prepara os dados para o sync E para o Job.
-        // Aqui está a correção final para evitar "Undefined array key 'position'"
-        $allSkills = collect($request->skills)->map(function ($skill) use ($collaboratorPosition) {
-            // $skill['position'] = $collaboratorPosition; // Garante que a chave exista
-            return $skill;
-        });
-        // dd($allSkills);
-
-        // 2. Prepara o Array para o sync() (Apenas dados PIVOT)
-        $attachData = $allSkills->mapWithKeys(function ($skill) {
-            return [
-                $skill['id'] => [
-                    'type' => $skill['type'],
-                    'value' => $skill['value'],
-                    // 'position' => $skill['position'],
-                    ]
-                ];
-            })
-            ->all();
-
-            // 3. Sincroniza (salva no DB)
-            // Isso resolve todos os erros de relacionamento (DB)
-            // $collaborator->profileEvaluations()->sync($syncData);
-            $collaborator->profileEvaluations()->detach();
-
-            // 4. ANEXA os novos registros em um loop.
-            foreach ($attachData as $evaluationId => $pivotData) {
-                // Usa o attach() para criar um novo registro na tabela pivot
-                $collaborator->profileEvaluations()->attach($evaluationId, $pivotData);
+        $response_skills = [];
+        $response_skills['collaborator_id'] = $collaborator->id;
+        $response_skills['thread_id'] = $collaborator->thread_id;
+        $response_skills['name'] = $collaborator->name;
+        $response_skills['position'] = $collaborator->position;
+        $response_skills['hardskills'] = collect($request->skills)->where('type', 'hard skill')->map(function ($skill) {
+            if ($skill['type'] == 'hard skill') {
+                return $skill;
             }
-            // dd($syncData);
+        });
+        $response_skills['softskills'] = collect($request->skills)->where('type', 'soft skill')->map(function ($skill) {
+            if ($skill['type'] == 'soft skill') {
+                return $skill;
+            }
+        });
 
-        // 4. Prepara o Array para o Job (Apenas os arrays de skills limpos)
-        $jobSkills = $allSkills->all();
 
         // 5. Despacha o Job para processamento assíncrono
-        ProcessCollaboratorEvaluation::dispatch($collaborator->id, $jobSkills);
+        ProcessCollaboratorEvaluation::dispatch($response_skills);
 
         // 6. Retorno Imediato (HTTP 202 - Accepted)
         // Isso informa ao frontend que a requisição foi aceita e será processada.

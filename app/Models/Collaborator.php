@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Collaborator extends Model
@@ -16,9 +17,8 @@ class Collaborator extends Model
         'name',
         'email',
         'phone',
-        'address_id',
-        'position',
-        'tread_id',
+        'job',
+        'thread_id',
         'parent_id',
         'role_id',
     ];
@@ -29,16 +29,9 @@ class Collaborator extends Model
         return $this->belongsTo(User::class, 'parent_id');
     }
 
-    public function profileEvaluations(): BelongsToMany
+    public function collaboratorEvaluation(): HasMany
     {
-        return $this->belongsToMany(
-            ProfileEvaluation::class,
-            'collaborator_profile_evaluations',
-            'collaborator_id', // Chave Local (Collaborator)
-            'evaluation_id'  // CHAVE REMOTA (ProfileEvaluation)
-        )
-        ->withPivot('type', 'value', 'position')
-        ->withTimestamps();
+        return $this->hasMany(CollaboratorEvaluation::class);
     }
 
 }

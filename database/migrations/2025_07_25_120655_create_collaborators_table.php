@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
-            $table->tinyText('position')->nullable();
+            $table->tinyText('job')->nullable();
             $table->tinyText('thread_id')->nullable();
             $table->foreignUuid('parent_id');
             $table->foreignId('role_id');

@@ -5,27 +5,29 @@
 namespace App\Services;
 
 use App\Models\Collaborator;
+use Illuminate\Database\Eloquent\Collection;
 use OpenAI\Laravel\Facades\OpenAI;
 
 class OpenAIEvaluationService
 {
-    public static function evaluate(Collaborator $collaborator, array $skills): array
+    public static function evaluate(array $response_skills): array
     {
         // 1. Prepara o Payload (Usando a position do collaborator, que agora tem um valor claro)
         $payload = [
-            'id' => $collaborator->id,
-            'name' => $collaborator->name,
-            'position' => $collaborator->position,
-            'skills' => $skills
+            'id' => $response_skills['collaborator_id'],
+            'name' => $response_skills['name'],
+            'position' => $response_skills['position'],
+            'hardskills' => $response_skills['hardskills'],
+            'softskills' => $response_skills['softskills'],
         ];
-
         // 2. Recupera ou cria Thread (Ajustei o campo 'tread_id' para 'thread_id')
-        if (!$collaborator->thread_id) {
+        if (!$response_skills['thread_id']) {
             $thread = OpenAI::threads()->create();
-            $collaborator->update(['thread_id' => $thread->id]);
+            Collaborator::find($response_skills['collaborator_id'])->update(['thread_id' => $thread->id]);
+            $response_skills['thread_id'] = $thread->id;
         } else {
             // Garante que o objeto $thread tem o ID necessário
-            $thread = (object)['id' => $collaborator->thread_id];
+            $thread = (object)['id' => $response_skills['thread_id']];
         }
 
         // 3. Adiciona nova mensagem com payload
