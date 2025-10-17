@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     gnupg \
     ca-certificates \
-    && docker-php-ext-install pdo pdo_pgsql pdo_mysql zip bcmath gd
+    && docker-php-ext-install pdo pdo_pgsql pdo_mysql zip bcmath gd pcntl sockets
 
 
 # -----------------------------
@@ -31,6 +31,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # 4. Definir diretório de trabalho
 # -----------------------------
 WORKDIR /var/www
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --prefer-dist --no-scripts --no-progress
 
 COPY . .
 

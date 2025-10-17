@@ -2,27 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class CollaboratorEvaluation extends Model
 {
-    use HasUuids;
-
     protected $fillable = [
         'collaborator_id',
-        'summary',
-        'proficience',
-        'position',
-        'align',
-        'assets',
-        'questions',
-        'score',
+        'feedback',
+        'opinion',
+        'points',
+        'positions',
     ];
 
     protected $casts = [
-        'assets' => 'array',
-        'questions' => 'array',
+        'points' => 'array',
+        'positions' => 'array',
     ];
 
     public function collaborator()

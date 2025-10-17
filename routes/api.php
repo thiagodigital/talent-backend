@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CollaboratorController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileCategoryController;
 use App\Http\Controllers\ProfileTraitController;
@@ -16,22 +17,25 @@ Route::middleware([
         return $request->user();
     });
 
-    Route::get('/categories', [ProfileCategoryController::class, 'index']);
-    Route::get('/categories/{profileCategory}', [ProfileCategoryController::class, 'show']);
+    // Route::get('/categories', [ProfileCategoryController::class, 'index']);
+    // Route::get('/categories/{profileCategory}', [ProfileCategoryController::class, 'show']);
 
-    Route::get('/traits', [ProfileTraitController::class, 'index']);
-    Route::post('/traits', [ProfileTraitController::class, 'store']);
-    Route::get('/traits/{profileTrait}', [ProfileTraitController::class, 'show']);
+    // Route::get('/traits', [ProfileTraitController::class, 'index']);
+    // Route::post('/traits', [ProfileTraitController::class, 'store']);
+    // Route::get('/traits/{profileTrait}', [ProfileTraitController::class, 'show']);
 
-    Route::apiResource('/positions', PositionController::class)->parameters([
-        'positions' => 'position'
-    ]);
+    // Route::apiResource('/positions', PositionController::class)->parameters([
+    //     'positions' => 'position'
+    // ]);
     Route::apiResource('/collaborators', CollaboratorController::class)->parameters([
         'collaborators' => 'collaborator'
     ]);
-    Route::get('/profile-category/list/group', [ProfileTraitController::class, 'listGroup']);
-    Route::get('/exams/profile/list/disc', [ProfileTraitController::class, 'discList']);
-    Route::post('/exams/profile/store/disc', [ProfileTraitController::class, 'discStore']);
+    // Route::get('/profile-category/list/group', [ProfileTraitController::class, 'listGroup']);
+    // Route::get('/exams/profile/list/disc', [ProfileTraitController::class, 'discList']);
+    // Route::post('/exams/profile/store/disc', [ProfileTraitController::class, 'discStore']);
+
+    Route::get('/exams/profile/list/evaluation', [EvaluationController::class, 'evaluationList']);
+    Route::post('/exams/profile/store/evaluation', [EvaluationController::class, 'storeEvaluation']);
 });
 
 Route::post('/register', [UserController::class, 'register']);

@@ -5,18 +5,16 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProfileTraitResourceCollection extends JsonResource
+class CollaboratorEvaluationResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'feedback' => $this->feedback,
+            'opinion' => $this->type,
+            'points' => $this->points,
+            'positions' => $this->positions,
         ];
     }
 }
